@@ -1,0 +1,553 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "API Departamento de Polícia",
+        "version": "1.0.0",
+        "description": "API para gerenciamento de informações sobre casos e agentes do Departamento de Polícia"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:3000",
+            "description": "Servidor de local desenvolvimento"
+        }
+    ],
+    "tags": [
+        {
+            "name": "Agentes",
+            "description": "Rota de gerenciamento de agentes do Departamento de Polícia."
+        },
+        {
+            "name": "Casos",
+            "description": "Rota de gerenciamento de casos do Departamento de Polícia."
+        }
+    ],
+    "paths": {
+        "/agentes": {
+            "get": {
+                "summary": "Retorna uma lista de agentes",
+                "tags": ["Agentes"],
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "cargo",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Filtra agentes pelo cargo"
+                    },
+                    {
+                        "in": "query",
+                        "name": "sort",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": ["dataDeIncorporacao", "-dataDeIncorporacao"]
+                        },
+                        "description": "Ordena a lista de agentes por data de incorporação (ascendente ou descendente)"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista de agentes"
+                    },
+                    "404": {
+                        "description": "Nenhum agente encontrado com os filtros fornecidos"
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor ao tentar buscar os agentes"
+                    }
+                }
+            },
+            "post": {
+                "summary": "Cria um novo agente",
+                "tags": ["Agentes"],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Agente"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Agente criado com sucesso"
+                    },
+                    "400": {
+                        "description": "Erro de validação dos dados do agente"
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor ao tentar criar o agente"
+                    }
+                }
+            }
+        },
+        "/agentes/{id}": {
+            "get": {
+                "summary": "Retorna um agente pelo ID",
+                "tags": ["Agentes"],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Detalhes do agente"
+                    },
+                    "404": {
+                        "description": "Agente não encontrado"
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor ao tentar buscar o agente"
+                    }
+                }
+            },
+            "put": {
+                "summary": "Atualiza um agente pelo ID",
+                "tags": ["Agentes"],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Agente"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Agente atualizado com sucesso"
+                    },
+                    "400": {
+                        "description": "Erro de validação dos dados do agente"
+                    },
+                    "404": {
+                        "description": "Agente não encontrado"
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor ao tentar atualizar o agente"
+                    }
+                }
+            },
+            "patch": {
+                "summary": "Atualiza parcialmente um agente pelo ID",
+                "tags": ["Agentes"],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "nome": {
+                                        "type": "string"
+                                    },
+                                    "dataDeIncorporacao": {
+                                        "type": "string",
+                                        "format": "date"
+                                    },
+                                    "cargo": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Agente atualizado com sucesso"
+                    },
+                    "400": {
+                        "description": "Erro de validação dos dados do agente"
+                    },
+                    "404": {
+                        "description": "Agente não encontrado"
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor ao tentar atualizar o agente"
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Deleta um agente pelo ID",
+                "tags": ["Agentes"],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Agente deletado com sucesso"
+                    },
+                    "404": {
+                        "description": "Agente não encontrado"
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor ao tentar deletar o agente"
+                    }
+                }
+            }
+        },
+        "/casos/search": {
+            "get": {
+                "summary": "Retorna uma lista de casos por busca textual",
+                "tags": ["Casos"],
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "q",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Texto de busca"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista de casos"
+                    },
+                    "404": {
+                        "description": "Nenhum caso encontrado com os filtros fornecidos ou filtro não encontrado"
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor ao tentar buscar os casos"
+                    }
+                }
+            }
+        },
+        "/casos/{id}/agente": {
+            "get": {
+                "summary": "Retorna o agente associado a um caso pelo ID",
+                "tags": ["Casos"],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "description": "ID do caso"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Agente associado ao caso encontrado"
+                    },
+                    "404": {
+                        "description": "Caso não encontrado ou agente não associado"
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor ao tentar buscar o agente associado ao caso"
+                    }
+                }
+            }
+        },
+        "/casos": {
+            "get": {
+                "summary": "Retorna uma lista de casos",
+                "tags": ["Casos"],
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "status",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": ["solucionado", "aberto"]
+                        },
+                        "description": "Filtra por status do caso"
+                    },
+                    {
+                        "in": "query",
+                        "name": "agente_id",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        },
+                        "description": "Filtra por ID do agente associado"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista de casos"
+                    },
+                    "400": {
+                        "description": "Erro de validação dos parâmetros de filtro"
+                    },
+                    "404": {
+                        "description": "Nenhum caso encontrado com os filtros fornecidos"
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor ao tentar buscar os casos"
+                    }
+                }
+            },
+            "post": {
+                "summary": "Cria um novo caso",
+                "tags": ["Casos"],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Caso"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Caso criado com sucesso"
+                    },
+                    "400": {
+                        "description": "Erro de validação dos dados do caso"
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor ao tentar criar o caso"
+                    }
+                }
+            }
+        },
+        "/casos/{id}": {
+            "get": {
+                "summary": "Retorna um caso pelo ID",
+                "tags": ["Casos"],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Detalhes do caso"
+                    },
+                    "404": {
+                        "description": "Caso não encontrado"
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor ao tentar buscar o caso"
+                    }
+                }
+            },
+            "put": {
+                "summary": "Atualiza um caso pelo ID",
+                "tags": ["Casos"],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Caso"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Caso atualizado com sucesso"
+                    },
+                    "400": {
+                        "description": "Erro de validação dos dados do caso"
+                    },
+                    "404": {
+                        "description": "Caso não encontrado"
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor ao tentar atualizar o caso"
+                    }
+                }
+            },
+            "patch": {
+                "summary": "Atualiza parcialmente um caso pelo ID",
+                "tags": ["Casos"],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "titulo": {
+                                        "type": "string"
+                                    },
+                                    "descricao": {
+                                        "type": "string"
+                                    },
+                                    "status": {
+                                        "type": "string",
+                                        "enum": ["solucionado", "aberto"]
+                                    },
+                                    "agente_id": {
+                                        "type": "string",
+                                        "format": "uuid"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Caso atualizado com sucesso"
+                    },
+                    "400": {
+                        "description": "Erro de validação dos dados do caso"
+                    },
+                    "404": {
+                        "description": "Caso não encontrado"
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor ao tentar atualizar o caso"
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Deleta um caso pelo ID",
+                "tags": ["Casos"],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Caso deletado com sucesso"
+                    },
+                    "404": {
+                        "description": "Caso não encontrado"
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor ao tentar deletar o caso"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Agente": {
+                "type": "object",
+                "required": ["nome", "dataDeIncorporacao", "cargo"],
+                "properties": {
+                    "nome": {
+                        "type": "string",
+                        "example": "Luiz Filipe"
+                    },
+                    "dataDeIncorporacao": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2021-07-01"
+                    },
+                    "cargo": {
+                        "type": "string",
+                        "example": "delegado"
+                    }
+                }
+            },
+            "Caso": {
+                "type": "object",
+                "required": ["titulo", "descricao", "status", "agente_id"],
+                "properties": {
+                    "titulo": {
+                        "type": "string",
+                        "example": "Roubo a mão armada"
+                    },
+                    "descricao": {
+                        "type": "string",
+                        "example": "Relato de assalto a uma joalheria no centro da cidade. Câmeras de segurança registraram dois suspeitos encapuzados."
+                    },
+                    "status": {
+                        "type": "string",
+                        "enum": ["aberto", "solucionado"],
+                        "example": "solucionado"
+                    },
+                    "agente_id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "UUID de um agente previamente cadastrado",
+                        "example": "ecaa8af1-9448-4143-b938-5ea39953a2b3"
+                    }
+                }
+            }
+        }
+    }
+}
