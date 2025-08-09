@@ -2,8 +2,7 @@ const db = require('../db/db');
 
 async function findAll() {
     try {
-        const casos = await db('casos');
-        return !casos ? false : casos;
+        return await db('casos');
     } catch (err) {
         console.error(err);
         return false;
@@ -12,8 +11,8 @@ async function findAll() {
 
 async function findById(id) {
     try {
-        const caso = await db('casos').where({ id: id });
-        return !caso ? false : caso[0];
+        const caso = await db('casos').where({ id: id }).first();
+        return caso ? caso : false;
     } catch (err) {
         console.error(err);
         return false;
@@ -33,7 +32,7 @@ async function create(caso) {
 async function update(id, updatedCasoData) {
     try {
         const updatedCaso = await db('casos').where({ id: id }).update(updatedCasoData, ['*']);
-        return !updatedCaso ? false : updatedCaso[0];
+        return !updatedCaso || updatedCaso.length === 0 ? false : updatedCaso[0];
     } catch (err) {
         console.error(err);
         return false;
@@ -42,8 +41,8 @@ async function update(id, updatedCasoData) {
 
 async function remove(id) {
     try {
-        const deleted = await db('casos').where({ id: id }).del();
-        return !deleted ? false : true;
+        const deletedCaso = await db('casos').where({ id: id }).del();
+        return !deletedCaso ? false : true;
     } catch (err) {
         console.error(err);
         return false;

@@ -2,8 +2,7 @@ const db = require('../db/db');
 
 async function findAll() {
     try {
-        const agentes = await db('agentes');
-        return !agentes ? false : agentes;
+        return await db('agentes');
     } catch (err) {
         console.error(err);
         return false;
@@ -12,9 +11,8 @@ async function findAll() {
 
 async function findById(id) {
     try {
-        const agente = await db('agentes').where({ id: id });
-        console.log(agente);
-        return !agente ? false : agente[0];
+        const agente = await db('agentes').where({ id: id }).first();
+        return agente ? agente : false;
     } catch (err) {
         console.error(err);
         return false;
@@ -34,7 +32,7 @@ async function create(agente) {
 async function update(id, updatedAgenteData) {
     try {
         const updated = await db('agentes').where({ id: id }).update(updatedAgenteData, ['*']);
-        return !updated ? false : updated[0];
+        return !updated || updated.length === 0 ? false : updated[0];
     } catch (err) {
         console.error(err);
         return false;

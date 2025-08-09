@@ -95,7 +95,7 @@ async function postCaso(req, res) {
         });
     }
 
-    if (!agentesRepository.findById(agente_id)) {
+    if (!(await agentesRepository.findById(agente_id))) {
         return res.status(404).json({
             message: `Não foi possível encontrar o agente de Id: ${agente_id}.`,
         });
@@ -133,7 +133,7 @@ async function updateCaso(req, res) {
         });
     }
 
-    if (!agentesRepository.findById(agente_id)) {
+    if (!(await agentesRepository.findById(agente_id))) {
         return res.status(404).json({
             message: `Não foi possível encontrar o agente de Id: ${agente_id}.`,
         });
@@ -179,7 +179,7 @@ async function patchCaso(req, res) {
         });
     }
 
-    if (agente_id !== undefined && !agentesRepository.findById(agente_id)) {
+    if (agente_id !== undefined && !(await agentesRepository.findById(agente_id))) {
         return res.status(404).json({
             message: `Não foi possível encontrar o agente de Id: ${agente_id}.`,
         });
