@@ -24,7 +24,7 @@ exports.seed = async function (knex) {
         {
             nome: 'Luiz Filipe',
             dataDeIncorporacao: '2018-03-30',
-            cargo: 'agente',
+            cargo: 'delegado',
         },
     ]);
 };
