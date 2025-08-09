@@ -31,8 +31,14 @@ async function findById(id) {
 
 async function create(agente) {
     try {
-        const [created] = await db('agentes').insert(agente, ['*']);
-        return created;
+        const [createdAgente] = await db('agentes').insert(agente, ['*']);
+        if (!createdAgente) {
+            return false;
+        }
+        return {
+            ...createdAgente,
+            dataDeIncorporacao: createdAgente.dataDeIncorporacao.toISOString().split('T')[0],
+        };
     } catch (err) {
         console.error(err);
         return false;
@@ -41,8 +47,16 @@ async function create(agente) {
 
 async function update(id, updatedAgenteData) {
     try {
-        const updated = await db('agentes').where({ id: id }).update(updatedAgenteData, ['*']);
-        return !updated || updated.length === 0 ? false : updated[0];
+        const updatedAgente = await db('agentes')
+            .where({ id: id })
+            .update(updatedAgenteData, ['*']);
+        if (!updatedAgente || updatedAgente.length === 0) {
+            return false;
+        }
+        return {
+            ...updatedAgente[0],
+            dataDeIncorporacao: updatedAgente[0].dataDeIncorporacao.toISOString().split('T')[0],
+        };
     } catch (err) {
         console.error(err);
         return false;
