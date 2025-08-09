@@ -8,22 +8,22 @@ async function getAllAgentes(req, res) {
     const cargo = req.query.cargo;
     const sort = req.query.sort;
 
-    let agentes = await agentesRepository.findAll();
-
-    if (cargo) {
-        agentes = agentes.filter((agente) => agente.cargo === cargo);
-        if (agentes.length === 0) {
-            return res.status(404).json({
-                message: `Não foi possível encontrar agentes com o cargo: ${cargo}.`,
-            });
-        }
+    if (sort && !['dataDeIncorporacao', '-dataDeIncorporacao'].includes(sort)) {
+        return res.status(400).json({
+            message: 'Parâmetro de ordenação inválido.',
+        });
     }
 
-    if (sort === 'dataDeIncorporacao' || sort === '-dataDeIncorporacao') {
-        agentes.sort((a, b) => {
-            const dateA = new Date(a.dataDeIncorporacao).getTime();
-            const dateB = new Date(b.dataDeIncorporacao).getTime();
-            return sort === 'dataDeIncorporacao' ? dateA - dateB : dateB - dateA;
+    const filtros = {};
+    if (cargo) filtros.cargo = cargo;
+
+    const agentes = await agentesRepository.findAll(filtros, sort);
+
+    if (!agentes || agentes.length === 0) {
+        return res.status(404).json({
+            message: cargo
+                ? `Não foi possível encontrar agentes com o cargo: ${cargo}.`
+                : 'Nenhum agente encontrado.',
         });
     }
     res.status(200).json(agentes);
@@ -49,7 +49,7 @@ async function getCasosByAgente(req, res) {
         });
     }
     const casos = await casosRepository.findByAgenteId(id);
-    if (!casos) {
+    if (!casos || casos.length === 0) {
         return res.status(404).json({
             message: `Nenhum caso foi encontrado para o agente de Id: ${id}.`,
         });

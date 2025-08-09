@@ -1,11 +1,20 @@
 const db = require('../db/db');
 
-async function findAll() {
+async function findAll(filters = {}, sort) {
     try {
-        return await db('agentes').select(
+        const query = db('agentes').select(
             '*',
             db.raw('to_char("dataDeIncorporacao", \'YYYY-MM-DD\') as "dataDeIncorporacao"')
         );
+        if (filters.cargo) {
+            query.where('cargo', filters.cargo);
+        }
+        if (sort) {
+            const direction = sort.startsWith('-') ? 'desc' : 'asc';
+            const column = sort.replace('-', '');
+            query.orderBy(column, direction);
+        }
+        return await query;
     } catch (err) {
         console.error(err);
         return false;
