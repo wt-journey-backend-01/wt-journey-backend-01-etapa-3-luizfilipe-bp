@@ -3,6 +3,7 @@ const router = express.Router();
 const agentesController = require('../controllers/agentesController');
 const validateIDParam = require('../utils/validateIDParam');
 
+router.get('/:id/casos', validateIDParam, agentesController.getCasosByAgente);
 router.get('/', agentesController.getAllAgentes);
 router.get('/:id', validateIDParam, agentesController.getAgenteById);
 router.post('/', agentesController.postAgente);

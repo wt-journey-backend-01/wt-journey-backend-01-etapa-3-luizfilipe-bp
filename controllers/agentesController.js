@@ -1,5 +1,5 @@
 const agentesRepository = require('../repositories/agentesRepository');
-
+const casosRepository = require('../repositories/casosRepository');
 function dateFormatIsValid(dateString) {
     return /^\d{4}-\d{2}-\d{2}$/.test(dateString);
 }
@@ -38,6 +38,23 @@ async function getAgenteById(req, res) {
         });
     }
     res.status(200).json(agente);
+}
+
+async function getCasosByAgente(req, res) {
+    const id = req.params.id;
+    const agente = await agentesRepository.findById(id);
+    if (!agente) {
+        return res.status(404).json({
+            message: `Não foi possível encontrar o agente de Id: ${id}.`,
+        });
+    }
+    const casos = await casosRepository.findByAgenteId(id);
+    if (!casos) {
+        return res.status(404).json({
+            message: `Nenhum caso foi encontrado para o agente de Id: ${id}.`,
+        });
+    }
+    res.status(200).json(casos);
 }
 
 async function postAgente(req, res) {
@@ -192,6 +209,7 @@ async function deleteAgente(req, res) {
 module.exports = {
     getAllAgentes,
     getAgenteById,
+    getCasosByAgente,
     postAgente,
     putAgente,
     patchAgente,

@@ -19,6 +19,16 @@ async function findById(id) {
     }
 }
 
+async function findByAgenteId(agente_id) {
+    try {
+        const casos = await db('casos').where({ agente_id: agente_id });
+        return !casos || casos.length === 0 ? false : casos;
+    } catch (err) {
+        console.error(err);
+        return false;
+    }
+}
+
 async function create(caso) {
     try {
         const [createdCaso] = await db('casos').insert(caso, ['*']);
@@ -52,6 +62,7 @@ async function remove(id) {
 module.exports = {
     findAll,
     findById,
+    findByAgenteId,
     create,
     update,
     remove,
