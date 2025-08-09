@@ -15,7 +15,12 @@ exports.up = function (knex) {
             table.string('titulo').notNullable();
             table.text('descricao').notNullable();
             table.enum('status', ['aberto', 'solucionado']).notNullable();
-            table.integer('agente_id').references('id').inTable('agentes').onDelete('CASCADE');
+            table
+                .integer('agente_id')
+                .notNullable()
+                .references('id')
+                .inTable('agentes')
+                .onDelete('CASCADE');
         });
 };
 
