@@ -6,17 +6,15 @@ function dateFormatIsValid(dateString) {
 
 async function getAllAgentes(req, res) {
     const cargo = req.query.cargo;
-    const sort = req.query.sort;
+    const filtros = {};
+    if (cargo) filtros.cargo = cargo;
 
+    const sort = req.query.sort;
     if (sort && !['dataDeIncorporacao', '-dataDeIncorporacao'].includes(sort)) {
         return res.status(400).json({
             message: 'Parâmetro de ordenação inválido.',
         });
     }
-
-    const filtros = {};
-    if (cargo) filtros.cargo = cargo;
-
     const agentes = await agentesRepository.findAll(filtros, sort);
 
     if (!agentes || agentes.length === 0) {
@@ -85,7 +83,7 @@ async function postAgente(req, res) {
 
     const newAgenteData = {
         nome,
-        dataDeIncorporacao: new Date(dataDeIncorporacao).toISOString().split('T')[0],
+        dataDeIncorporacao,
         cargo,
     };
 
