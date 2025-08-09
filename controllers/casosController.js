@@ -5,23 +5,26 @@ async function getAllCasos(req, res) {
     const agente_id = req.query.agente_id;
     const status = req.query.status;
 
-    let casos = await casosRepository.findAll();
     if (status) {
         if (!['aberto', 'solucionado'].includes(status)) {
             return res.status(400).json({
                 message: 'O status deve ser "aberto" ou "solucionado".',
             });
         }
-        casos = casos.filter((caso) => caso.status === status);
-        if (casos.length === 0) {
-            return res.status(404).json({
-                message: `Não foi possível encontrar casos com o status: ${status}.`,
-            });
-        }
+    }
+
+    const filtros = {};
+    if (status) filtros.status = status;
+    if (agente_id) filtros.agente_id = agente_id;
+    const casos = await casosRepository.findAll(filtros);
+
+    if (casos.length === 0) {
+        return res.status(404).json({
+            message: `Não foi possível encontrar casos com o status: ${status}.`,
+        });
     }
 
     if (agente_id) {
-        casos = casos.filter((caso) => caso.agente_id === agente_id);
         if (casos.length === 0) {
             return res.status(404).json({
                 message: `Nenhum caso foi encontrado para o agente de Id: ${agente_id}`,
@@ -32,7 +35,7 @@ async function getAllCasos(req, res) {
 }
 
 async function getCasoById(req, res) {
-    const id = req.params.id;
+    const id = Number(req.params.id);
     const caso = await casosRepository.findById(id);
     if (!caso) {
         return res.status(404).json({
@@ -43,7 +46,7 @@ async function getCasoById(req, res) {
 }
 
 async function getAgenteByCaso(req, res) {
-    const caso_id = req.params.id;
+    const caso_id = Number(req.params.id);
     const caso = await casosRepository.findById(caso_id);
     if (!caso) {
         return res.status(404).json({
@@ -65,15 +68,9 @@ async function searchCasos(req, res) {
         return res.status(404).json({ message: "Parâmetro de pesquisa 'q' não encontrado" });
     }
 
-    const casos = await casosRepository.findAll();
-    const searchedCasos = casos.filter((caso) => {
-        return (
-            caso.titulo.toLowerCase().includes(search) ||
-            caso.descricao.toLowerCase().includes(search)
-        );
-    });
+    const searchedCasos = await casosRepository.searchByKeyword(search);
 
-    if (searchedCasos.length === 0) {
+    if (!searchedCasos || searchedCasos.length === 0) {
         return res.status(404).json({
             message: `Não foi possível encontrar casos que correspondam à pesquisa: ${search}.`,
         });

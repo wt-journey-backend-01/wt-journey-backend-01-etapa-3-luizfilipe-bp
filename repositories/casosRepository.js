@@ -1,8 +1,15 @@
 const db = require('../db/db');
 
-async function findAll() {
+async function findAll(filters = {}) {
     try {
-        return await db('casos');
+        const casos = db('casos');
+        if (filters.agente_id) {
+            casos.where({ agente_id: filters.agente_id });
+        }
+        if (filters.status) {
+            casos.where({ status: filters.status });
+        }
+        return await casos;
     } catch (err) {
         console.error(err);
         return false;
@@ -59,6 +66,17 @@ async function remove(id) {
     }
 }
 
+async function search(keyword) {
+    try {
+        return await db('casos')
+            .whereILike('titulo', `%${keyword}%`)
+            .orWhereILike('descricao', `%${keyword}%`);
+    } catch (err) {
+        console.error(err);
+        return false;
+    }
+}
+
 module.exports = {
     findAll,
     findById,
@@ -66,4 +84,5 @@ module.exports = {
     create,
     update,
     remove,
+    search,
 };
