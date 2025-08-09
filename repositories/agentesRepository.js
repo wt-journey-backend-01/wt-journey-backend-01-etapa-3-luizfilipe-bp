@@ -7,20 +7,18 @@ async function findAll(filters = {}, sort) {
             query.where('cargo', filters.cargo);
         }
 
-        let direction = 'asc';
-        if (sort === '-dataDeIncorporacao') {
-            direction = 'desc';
+        if (sort === 'dataDeIncorporacao') {
+            query.orderBy('dataDeIncorporacao', 'asc');
+        } else if (sort === '-dataDeIncorporacao') {
+            query.orderBy('dataDeIncorporacao', 'desc');
         }
-        query.orderBy('dataDeIncorporacao', direction);
 
         const agentes = await query;
 
-        return !agentes
-            ? false
-            : agentes.map((agente) => ({
-                  ...agente,
-                  dataDeIncorporacao: agente.dataDeIncorporacao.toISOString().split('T')[0],
-              }));
+        return agentes.map((agente) => ({
+            ...agente,
+            dataDeIncorporacao: agente.dataDeIncorporacao.toISOString().split('T')[0],
+        }));
     } catch (err) {
         console.error(err);
         return false;

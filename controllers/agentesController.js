@@ -10,19 +10,14 @@ async function getAllAgentes(req, res) {
     if (cargo) filtros.cargo = cargo;
 
     const sort = req.query.sort;
-    if (sort && !['dataDeIncorporacao', '-dataDeIncorporacao'].includes(sort)) {
-        return res.status(400).json({
-            message: 'Parâmetro de ordenação inválido.',
-        });
-    }
     const agentes = await agentesRepository.findAll(filtros, sort);
 
-    if (!agentes || agentes.length === 0) {
-        return res.status(404).json({
-            message: cargo
-                ? `Não foi possível encontrar agentes com o cargo: ${cargo}.`
-                : 'Nenhum agente encontrado.',
-        });
+    if (cargo) {
+        if (agentes.length === 0) {
+            return res.status(404).json({
+                message: `Não foi possível encontrar agentes com o cargo: ${cargo}.`,
+            });
+        }
     }
     res.status(200).json(agentes);
 }
