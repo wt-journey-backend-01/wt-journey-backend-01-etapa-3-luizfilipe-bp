@@ -2,7 +2,10 @@ const db = require('../db/db');
 
 async function findAll() {
     try {
-        return await db('agentes');
+        return await db('agentes').select(
+            '*',
+            db.raw('to_char("dataDeIncorporacao", \'YYYY-MM-DD\') as "dataDeIncorporacao"')
+        );
     } catch (err) {
         console.error(err);
         return false;
@@ -11,7 +14,14 @@ async function findAll() {
 
 async function findById(id) {
     try {
-        const agente = await db('agentes').where({ id: id }).first();
+        const agente = await db('agentes')
+            .select(
+                '*',
+                db.raw('to_char("dataDeIncorporacao", \'YYYY-MM-DD\') as "dataDeIncorporacao"')
+            )
+            .where({ id })
+            .first();
+
         return agente ? agente : false;
     } catch (err) {
         console.error(err);
