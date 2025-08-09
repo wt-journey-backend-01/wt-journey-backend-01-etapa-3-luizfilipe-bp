@@ -1,12 +1,13 @@
 const express = require('express');
 const router = express.Router();
 const agentesController = require('../controllers/agentesController');
+const validateIDParam = require('../utils/validateIDParam');
 
 router.get('/', agentesController.getAllAgentes);
-router.get('/:id', agentesController.getAgenteById);
+router.get('/:id', validateIDParam, agentesController.getAgenteById);
 router.post('/', agentesController.postAgente);
-router.put('/:id', agentesController.putAgente);
-router.patch('/:id', agentesController.patchAgente);
-router.delete('/:id', agentesController.deleteAgente);
+router.put('/:id', validateIDParam, agentesController.putAgente);
+router.patch('/:id', validateIDParam, agentesController.patchAgente);
+router.delete('/:id', validateIDParam, agentesController.deleteAgente);
 
 module.exports = router;
