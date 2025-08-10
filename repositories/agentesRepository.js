@@ -1,15 +1,15 @@
 const db = require('../db/db');
 
-async function findAll(filters = {}, sort) {
+async function findAll(filters = {}) {
     try {
         const query = db('agentes');
         if (filters.cargo) {
             query.where('cargo', filters.cargo);
         }
 
-        if (sort === 'dataDeIncorporacao') {
+        if (filters.sort === 'dataDeIncorporacao') {
             query.orderBy('dataDeIncorporacao', 'asc');
-        } else if (sort === '-dataDeIncorporacao') {
+        } else if (filters.sort === '-dataDeIncorporacao') {
             query.orderBy('dataDeIncorporacao', 'desc');
         }
 

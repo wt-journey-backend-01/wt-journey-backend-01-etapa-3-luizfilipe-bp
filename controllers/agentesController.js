@@ -6,11 +6,11 @@ function dateFormatIsValid(dateString) {
 
 async function getAllAgentes(req, res) {
     const cargo = req.query.cargo;
+    const sort = req.query.sort;
     const filtros = {};
     if (cargo) filtros.cargo = cargo;
-
-    const sort = req.query.sort;
-    const agentes = await agentesRepository.findAll(filtros, sort);
+    if (sort) filtros.sort = sort;
+    const agentes = await agentesRepository.findAll(filtros);
 
     if (cargo) {
         if (agentes.length === 0) {
