@@ -35,7 +35,7 @@ async function getAllCasos(req, res) {
 }
 
 async function getCasoById(req, res) {
-    const id = Number(req.params.id);
+    const id = req.params.id;
     const caso = await casosRepository.findById(id);
     if (!caso) {
         return res.status(404).json({
@@ -46,7 +46,7 @@ async function getCasoById(req, res) {
 }
 
 async function getAgenteByCaso(req, res) {
-    const caso_id = Number(req.params.id);
+    const caso_id = req.params.id;
     const caso = await casosRepository.findById(caso_id);
     if (!caso) {
         return res.status(404).json({
