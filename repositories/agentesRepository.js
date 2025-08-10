@@ -27,15 +27,12 @@ async function findAll(filters = {}) {
 
 async function findById(id) {
     try {
-        const agente = await db('agentes')
-            .select(
-                '*',
-                db.raw('to_char("dataDeIncorporacao", \'YYYY-MM-DD\') as "dataDeIncorporacao"')
-            )
-            .where({ id })
-            .first();
+        const agente = await db('agentes').where({ id }).first();
 
-        return agente;
+        return {
+            ...agente,
+            dataDeIncorporacao: agente.dataDeIncorporacao.toISOString().split('T')[0],
+        };
     } catch (err) {
         console.error(err);
         return false;
