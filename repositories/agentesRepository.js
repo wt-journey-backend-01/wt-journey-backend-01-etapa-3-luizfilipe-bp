@@ -28,7 +28,9 @@ async function findAll(filters) {
 async function findById(id) {
     try {
         const agente = await db('agentes').where({ id }).first();
-
+        if (!agente) {
+            return null;
+        }
         return {
             ...agente,
             dataDeIncorporacao: agente.dataDeIncorporacao.toISOString().split('T')[0],
