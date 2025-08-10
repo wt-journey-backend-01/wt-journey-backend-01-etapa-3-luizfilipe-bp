@@ -18,10 +18,12 @@ async function getAllCasos(req, res) {
     if (agente_id) filtros.agente_id = agente_id;
     const casos = await casosRepository.findAll(filtros);
 
-    if (casos.length === 0) {
-        return res.status(404).json({
-            message: `Não foi possível encontrar casos com o status: ${status}.`,
-        });
+    if (status) {
+        if (casos.length === 0) {
+            return res.status(404).json({
+                message: `Não foi possível encontrar casos com o status: ${status}.`,
+            });
+        }
     }
 
     if (agente_id) {
