@@ -4,7 +4,7 @@ async function findAll(filters = {}) {
     try {
         const query = db('agentes');
         if (filters.cargo) {
-            query.where('cargo', filters.cargo);
+            query.where('cargo', 'ilike', `%${filters.cargo}%`);
         }
 
         if (filters.sort === 'dataDeIncorporacao') {
