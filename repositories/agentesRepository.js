@@ -35,7 +35,7 @@ async function findById(id) {
             .where({ id })
             .first();
 
-        return agente ? agente : false;
+        return agente;
     } catch (err) {
         console.error(err);
         return false;
