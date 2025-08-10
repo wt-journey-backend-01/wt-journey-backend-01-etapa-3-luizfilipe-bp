@@ -1,6 +1,6 @@
 const db = require('../db/db');
 
-async function findAll(filters = {}) {
+async function findAll(filters) {
     try {
         const query = db('agentes');
         if (filters.cargo) {
