@@ -63,14 +63,14 @@ async function getAgenteByCaso(req, res) {
 }
 
 async function searchCasos(req, res) {
-    const search = req.query.q?.trim().toLowerCase();
-    if (!search) {
+    const search = req.query.q;
+    if (!search || search.trim() === '') {
         return res.status(404).json({ message: "Parâmetro de pesquisa 'q' não encontrado" });
     }
 
     const searchedCasos = await casosRepository.search(search);
 
-    if (!searchedCasos || searchedCasos.length === 0) {
+    if (searchedCasos.length === 0) {
         return res.status(404).json({
             message: `Não foi possível encontrar casos que correspondam à pesquisa: ${search}.`,
         });
