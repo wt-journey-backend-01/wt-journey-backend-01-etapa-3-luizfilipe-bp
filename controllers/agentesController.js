@@ -7,6 +7,11 @@ function dateFormatIsValid(dateString) {
 async function getAllAgentes(req, res) {
     const cargo = req.query.cargo;
     const sort = req.query.sort;
+    if (sort && !['dataDeIncorporacao', '-dataDeIncorporacao'].includes(sort)) {
+        return res.status(400).json({
+            message: "O parâmetro 'sort' deve ser 'dataDeIncorporacao' ou '-dataDeIncorporacao'.",
+        });
+    }
     const filtros = {};
     if (cargo) filtros.cargo = cargo;
     if (sort) filtros.sort = sort;
