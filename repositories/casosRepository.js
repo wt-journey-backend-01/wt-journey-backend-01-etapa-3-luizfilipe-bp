@@ -67,14 +67,9 @@ async function remove(id) {
 }
 
 async function search(q) {
-    try {
-        return await db('casos').andWhere(function () {
-            this.whereILike('titulo', `%${q}%`).orWhereILike('descricao', `%${q}%`);
-        });
-    } catch (err) {
-        console.error(err);
-        return false;
-    }
+    return await db('casos').where(function () {
+        this.whereILike('titulo', `%${q}%`).orWhereILike('descricao', `%${q}%`);
+    });
 }
 
 module.exports = {
