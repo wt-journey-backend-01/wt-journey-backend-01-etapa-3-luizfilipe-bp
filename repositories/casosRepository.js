@@ -68,7 +68,9 @@ async function remove(id) {
 
 async function search(q) {
     try {
-        return await db('casos').whereILike('titulo', `%${q}%`).orWhereILike('descricao', `%${q}%`);
+        return await db('casos').andWhere(function () {
+            this.whereILike('titulo', `%${q}%`).orWhereILike('descricao', `%${q}%`);
+        });
     } catch (err) {
         console.error(err);
         return false;

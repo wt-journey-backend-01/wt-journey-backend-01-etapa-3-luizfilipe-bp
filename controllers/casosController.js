@@ -70,7 +70,7 @@ async function searchCasos(req, res) {
         return res.status(404).json({ message: "Parâmetro de pesquisa 'q' não encontrado" });
     }
 
-    const searchedCasos = await casosRepository.search(search);
+    const searchedCasos = await casosRepository.search(search.trim());
 
     if (searchedCasos.length === 0) {
         return res.status(404).json({
