@@ -19,9 +19,6 @@ async function findAll(filters = {}) {
 async function findById(id) {
     try {
         const caso = await db('casos').where({ id: id }).first();
-        if (!caso) {
-            return null;
-        }
         return caso;
     } catch (err) {
         throw new ApiError(500, 'Não foi possível encontrar o caso por Id');
