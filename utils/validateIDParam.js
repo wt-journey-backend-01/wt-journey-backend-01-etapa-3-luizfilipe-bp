@@ -1,7 +1,12 @@
+const ApiError = require('./ApiError');
 function validateIDParam(req, res, next) {
     const id = req.params.id;
     if (!/^\d+$/.test(id)) {
-        return res.status(404).json({ message: 'O parâmetro ID deve ser um número inteiro' });
+        return next(
+            new ApiError(400, 'Parâmetros inválidos', {
+                id: 'O parâmetro ID deve ser um número inteiro',
+            })
+        );
     }
     next();
 }
