@@ -1,10 +1,11 @@
 const db = require('../db/db');
+const ApiError = require('../utils/ApiError');
 
 async function findAll(filters) {
     try {
         const query = db('agentes');
         if (filters.cargo) {
-            query.where('cargo', 'ilike', `%${filters.cargo}%`);
+            query.where('cargo', filters.cargo);
         }
 
         if (filters.sort === 'dataDeIncorporacao') {
@@ -20,14 +21,13 @@ async function findAll(filters) {
             dataDeIncorporacao: agente.dataDeIncorporacao.toISOString().split('T')[0],
         }));
     } catch (err) {
-        console.error(err);
-        return false;
+        throw new ApiError(500, 'Não foi possivel buscar agentes');
     }
 }
 
 async function findById(id) {
     try {
-        const agente = await db('agentes').where({ id }).first();
+        const agente = await db('agentes').where({ id: id }).first();
         if (!agente) {
             return null;
         }
@@ -36,52 +36,46 @@ async function findById(id) {
             dataDeIncorporacao: agente.dataDeIncorporacao.toISOString().split('T')[0],
         };
     } catch (err) {
-        console.error(err);
-        return false;
+        throw new ApiError(500, 'Não foi possível encontrar agente por Id');
     }
 }
 
 async function create(agente) {
     try {
         const [createdAgente] = await db('agentes').insert(agente, ['*']);
-        if (!createdAgente) {
-            return false;
-        }
         return {
             ...createdAgente,
             dataDeIncorporacao: createdAgente.dataDeIncorporacao.toISOString().split('T')[0],
         };
     } catch (err) {
-        console.error(err);
-        return false;
+        throw new ApiError(500, 'Não foi possível criar agente');
     }
 }
 
 async function update(id, updatedAgenteData) {
     try {
-        const updatedAgente = await db('agentes')
+        const [updatedAgente] = await db('agentes')
             .where({ id: id })
             .update(updatedAgenteData, ['*']);
-        if (!updatedAgente || updatedAgente.length === 0) {
-            return false;
+
+        if (!updatedAgente) {
+            return null;
         }
         return {
-            ...updatedAgente[0],
-            dataDeIncorporacao: updatedAgente[0].dataDeIncorporacao.toISOString().split('T')[0],
+            ...updatedAgente,
+            dataDeIncorporacao: updatedAgente.dataDeIncorporacao.toISOString().split('T')[0],
         };
     } catch (err) {
-        console.error(err);
-        return false;
+        throw new ApiError(500, 'Não foi possível atualizar agente');
     }
 }
 
 async function remove(id) {
     try {
         const deleted = await db('agentes').where({ id: id }).del();
-        return !deleted ? false : true;
+        return deleted > 0;
     } catch (err) {
-        console.error(err);
-        return false;
+        throw new ApiError(500, 'Não foi possível remover agente');
     }
 }
 
