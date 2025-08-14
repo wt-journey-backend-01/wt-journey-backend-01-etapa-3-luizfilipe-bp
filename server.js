@@ -13,6 +13,9 @@ app.use('/agentes', agentesRouter);
 const swaggerDocs = require('./docs/swagger.json');
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
+const errorHandler = require('./utils/errorHandler');
+app.use(errorHandler);
+
 const PORT = 3000;
 app.listen(PORT, () => {
     console.log(
