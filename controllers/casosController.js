@@ -41,7 +41,10 @@ async function getAllCasos(req, res) {
 
 async function getCasoById(req, res) {
     const id = req.params.id;
-    const caso = await getCasoOrThrowApiError(id);
+    const caso = await casosRepository.findById(id);
+    if (!caso) {
+        return res.status(404).json({ message: `Não foi possível encontrar o caso de Id: ${id}.` });
+    }
     res.status(200).json(caso);
 }
 
