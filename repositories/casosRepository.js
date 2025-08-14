@@ -1,4 +1,5 @@
 const db = require('../db/db');
+const ApiError = require('../utils/ApiError');
 
 async function findAll(filters = {}) {
     try {
@@ -11,28 +12,31 @@ async function findAll(filters = {}) {
         }
         return await casos;
     } catch (err) {
-        console.error(err);
-        return false;
+        throw new ApiError(500, 'Não foi possível buscar os casos.');
     }
 }
 
 async function findById(id) {
     try {
         const caso = await db('casos').where({ id: id }).first();
-        return caso ? caso : false;
+        if (!caso) {
+            return null;
+        }
+        return caso;
     } catch (err) {
-        console.error(err);
-        return false;
+        throw new ApiError(500, 'Não foi possível encontrar o caso por Id');
     }
 }
 
 async function findByAgenteId(agente_id) {
     try {
         const casos = await db('casos').where({ agente_id: agente_id });
+        if (!casos) {
+            return null;
+        }
         return casos;
     } catch (err) {
-        console.error(err);
-        return false;
+        throw new ApiError(500, 'Não foi possível encontrar os casos por agente Id');
     }
 }
 
@@ -41,28 +45,28 @@ async function create(caso) {
         const [createdCaso] = await db('casos').insert(caso, ['*']);
         return createdCaso;
     } catch (err) {
-        console.error(err);
-        return false;
+        throw new ApiError(500, 'Não foi possível criar o caso');
     }
 }
 
 async function update(id, updatedCasoData) {
     try {
-        const updatedCaso = await db('casos').where({ id: id }).update(updatedCasoData, ['*']);
-        return !updatedCaso || updatedCaso.length === 0 ? false : updatedCaso[0];
+        const [updatedCaso] = await db('casos').where({ id: id }).update(updatedCasoData, ['*']);
+        if (!updatedCaso) {
+            return null;
+        }
+        return updatedCaso;
     } catch (err) {
-        console.error(err);
-        return false;
+        throw new ApiError(500, 'Não foi possível atualizar o caso');
     }
 }
 
 async function remove(id) {
     try {
         const deletedCaso = await db('casos').where({ id: id }).del();
-        return !deletedCaso ? false : true;
+        return deletedCaso > 0;
     } catch (err) {
-        console.error(err);
-        return false;
+        throw new ApiError(500, 'Não foi possível deletar o caso');
     }
 }
 
