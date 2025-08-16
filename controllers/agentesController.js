@@ -18,10 +18,10 @@ async function getAllAgentes(req, res) {
             sort: "O parâmetro 'sort' deve ser 'dataDeIncorporacao' ou '-dataDeIncorporacao'.",
         });
     }
-    const filtros = {};
-    if (cargo) filtros.cargo = cargo;
-    if (sort) filtros.sort = sort;
-    const agentes = await agentesRepository.findAll(filtros);
+    const filters = {};
+    if (cargo) filters.cargo = cargo;
+    if (sort) filters.sort = sort;
+    const agentes = await agentesRepository.findAll(filters);
 
     if (cargo) {
         if (agentes.length === 0) {

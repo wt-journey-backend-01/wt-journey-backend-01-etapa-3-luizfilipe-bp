@@ -16,14 +16,16 @@ async function getAllCasos(req, res) {
 
     if (status) {
         if (!['aberto', 'solucionado'].includes(status)) {
-            throw new ApiError(400, "O status deve ser 'aberto' ou 'solucionado'.");
+            throw new ApiError(400, 'Parâmetros inválidos', {
+                status: "O status deve ser 'aberto' ou 'solucionado'.",
+            });
         }
     }
 
-    const filtros = {};
-    if (status) filtros.status = status;
-    if (agente_id) filtros.agente_id = agente_id;
-    const casos = await casosRepository.findAll(filtros);
+    const filters = {};
+    if (status) filters.status = status;
+    if (agente_id) filters.agente_id = agente_id;
+    const casos = await casosRepository.findAll(filters);
 
     if (status) {
         if (casos.length === 0) {
